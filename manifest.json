@@ -1,0 +1,15 @@
+{
+  "manifest_version": 2,
+  "name": "crawling test",
+  "version": "0.1",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://store.naver.com/accommodations/list?deviceType=pc&display=120&ip=203.233.111.56&query=%EC%BA%A0%ED%95%91%EC%9E%A5&sessionid=WCuyneuGWQ5MemXXyd3oow%3D%3D&start=1"
+      ],
+      "js": [
+        "crawling.js"
+      ],
+    }
+  ],
+}
