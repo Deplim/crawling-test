@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+  "name": "crawling test",
+  "version": "0.1",
+  "permissions": [
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "get_target_address.js", "crawling_target_content.js"
+      ]
+    }
+  ]
+}
