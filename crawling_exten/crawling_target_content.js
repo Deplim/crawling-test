@@ -14,12 +14,23 @@ ss_button.style="position: fixed; top: 40px; right: 230px; z-index: 999; backgro
 document.body.appendChild(ss_button);
 ss_button.addEventListener('click', jsonSend);
 
-var temp_link_window;
+var ky_button = document.createElement('button');
+ky_button.innerHTML=("store");
+ky_button.style="position: fixed; top: 70px; right: 10px; z-index: 999; background-color:red;";
+document.body.appendChild(ky_button);
+ky_button.addEventListener('click', store);
+
 var target=new Array();
-var current_target=0;
 var address_length=0;
+
+var current_target=0;
+var temp_link_window;
+
 var result="";
 var blog_result=new Array();
+
+var target_title=new Array();
+
 
 function naver_place_crawling(link){
 	result=result+"{\"campGround\":[";
@@ -29,13 +40,30 @@ function naver_place_crawling(link){
         address_length=target.length;
     	temp_link=target[current_target][1];
     	console.log("link: ", temp_link)
-		temp_link_window=window.open(temp_link, "myWin")		
+		temp_link_window=window.open(temp_link)		
 		var timerID = setTimeout("crawling_repeat(3)", 2500); 
     });
 }
+
+function store(){
+	console.log(result)
+	console.log(blog_result)
+	chrome.storage.local.set({data1: result})
+	chrome.storage.local.set({data2: blog_result})
+	return 0;
+}
+
 function crawling_repeat(time) { 
+
+	console.log("readystate: ", temp_link_window.document.readyState)
 	if(temp_link_window.document.readyState=="complete"){
 		try{
+		    console.log("target title : ", temp_link_window.document.title);
+		    if(target_title.includes(temp_link_window.document.title)){
+		    	throw new Error("윈도우 오픈 관련 오류로 인해 중복 추출됨")
+		    }
+		    target_title.push(temp_link_window.document.title);
+
 			var blog=null;
 			var reviewCount=0;
 			var bookReviewCount=0;
@@ -62,33 +90,38 @@ function crawling_repeat(time) {
 						else if(info_inner[i].href.includes("fsasReview")){
 							reviewCount=Number(info_inner[i].innerHTML.split(">")[2])
 
-							var temp_count=0;
 							blog="["
 							var blog_review = temp_link_window.document.getElementById('tabs').querySelector("a[aria-label='블로그 리뷰']");
-							blog_review.click()
-							var list_place_col1=temp_link_window.document.getElementsByClassName("list_place_col1")[0].children;
-							for(var i=0; i<list_place_col1.length; i++){
-								blog=blog+"{\'title\':\'"+list_place_col1[i].getElementsByClassName("name")[0].innerHTML+"\'"
-								blog=blog+",\'content\':\'"+list_place_col1[i].getElementsByClassName("txt ellp2")[0].innerHTML+"\'"
-								blog=blog+",\'author\':\'"+list_place_col1[i].getElementsByClassName("info name")[0].href+"\'"
-								blog=blog+",\'linkUrl\':\'"+list_place_col1[i].getElementsByClassName("name")[0].href+"\'"
-								if(list_place_col1[i].getElementsByClassName("thumb").length!=0){	
-									temp_imageUrl=list_place_col1[i].getElementsByClassName("thumb")[0].children[0].src;												
-									temp_imageUrl=temp_imageUrl.slice(0, temp_imageUrl.lastIndexOf("%"));
-									blog=blog+",\'imageUrl\':\'"+temp_imageUrl+"\'";
+							blog_review.click(temp_link_window.document.getElementsByClassName("list_place_col1")[0])
+							if(temp_link_window.document.getElementsByClassName("list_place_col1").length!=0){
+								var list_place_col1=temp_link_window.document.getElementsByClassName("list_place_col1")[0].children;
+								for(var i=0; i<list_place_col1.length; i++){
+									blog=blog+"{\"title\":\""+list_place_col1[i].getElementsByClassName("name")[0].innerHTML+"\""
+									blog=blog+",\"content\":\""+list_place_col1[i].getElementsByClassName("txt ellp2")[0].innerHTML+"\""
+									blog=blog+",\"author\":\""+list_place_col1[i].getElementsByClassName("info name")[0].children[0].innerHTML+"\""
+									blog=blog+",\"linkUrl\":\""+list_place_col1[i].getElementsByClassName("name")[0].href+"\""
+									if(list_place_col1[i].getElementsByClassName("thumb").length!=0){	
+										temp_imageUrl=list_place_col1[i].getElementsByClassName("thumb")[0].children[0].src;												
+										temp_imageUrl=temp_imageUrl.slice(0, temp_imageUrl.lastIndexOf("%"));
+										blog=blog+",\"imageUrl\":\""+temp_imageUrl+"\"";
+									}
+									else{
+										blog=blog+",\"imageUrl\":\"null\"";
+									}
+									blog=blog+",\"registDate\":\""+list_place_col1[i].getElementsByClassName("info time")[0].innerHTML+"\"},"
+									if(i==2){
+										break;
+									}
+								}						
+								blog=blog.slice(0, -1);
+								blog=blog+"]";
+								if((reviewCount==null)||(reviewCount=="")||(blog==null)||(blog=="")){
+									throw new Error("객체에서 값 넘어오지 않음")
 								}
-								else{
-									blog=blog+",\'imageUrl\':\'null\'";
-								}
-								blog=blog+",\'registDate\':\'"+list_place_col1[i].getElementsByClassName("info time")[0].innerHTML+"\'},"
-								if(i==2){
-									break;
-								}
-							}						
-							blog=blog.slice(0, -1);
-							blog=blog+"]";
-							if((reviewCount==null)||(reviewCount=="")||(blog==null)||(blog=="")){
-								throw new Error("객체에서 값 넘어오지 않음")
+							}
+							else{
+								blog=null;
+								reviewCount=0;
 							}
 						}
 					}			
@@ -103,16 +136,7 @@ function crawling_repeat(time) {
 			}
 			blog_result.push(blog)
 			console.log(target[current_target][0], "\n", blog, "\n", reviewCount, "\n", bookReviewCount, "\n", bookFlag, "\n", rating, "\n", "isdelete = 0", "\n")
-			result=result+"{\"campGroundIdx\":\""+target[current_target][0]+"\","+"\"reviewCount\":\""+reviewCount+"\","+"\"bookReviewCount\":\""+bookReviewCount+"\","+"\"bookFlag\":\""+bookFlag+"\","+"\"rating\":\""+rating+"\","+"\"isDelete\":\"0\"},"
-			if(current_target==address_length-1){
-				result=result.slice(0, -1);
-				result=result+"]}";
-				console.log(result)
-				console.log(blog_result)
-				chrome.storage.local.set({data1: result})
-				chrome.storage.local.set({data2: blog_result})
-				return 0;
-			}
+			result=result+"{\"campGroundIdx\":\""+target[current_target][0]+"\","+"\"reviewCount\":\""+reviewCount+"\","+"\"bookReviewCount\":\""+bookReviewCount+"\","+"\"bookFlag\":\""+bookFlag+"\","+"\"rating\":\""+rating+"\","+"\"isDelete\":\"0\"},";
 		}
 		catch(e){
 			console.log(e)
@@ -128,20 +152,56 @@ function crawling_repeat(time) {
 				console.log(e)
 			}
 		}
+		if(current_target%25==0){
+			arr=target_title;
+		    var resultMap = {};
+	   	    for (var i in arr) {
+		        if (!(arr[i] in resultMap)){
+		            resultMap[arr[i]] = [];
+		        }
+		        resultMap[arr[i]].push(arr[i]);
+		    }
+		    console.log(resultMap)
+			console.log(result)
+			console.log(blog_result)
+			chrome.storage.local.set({data1: result})
+			chrome.storage.local.set({data2: blog_result})
+		}
 		if(current_target==address_length-1){
+			arr=target_title;
+		    var resultMap = {};
+	   	    for (var i in arr) {
+		        if (!(arr[i] in resultMap)){
+		            resultMap[arr[i]] = [];
+		        }
+		        resultMap[arr[i]].push(arr[i]);
+		    }
+		    console.log(resultMap)
+			console.log(result)
+			console.log(blog_result)
+			chrome.storage.local.set({data1: result})
+			chrome.storage.local.set({data2: blog_result})
 			return 0;
 		}
+		temp_link_window.close()
 		current_target=current_target+1;
-		temp_link=target[current_target][1];
-		console.log("link: ", temp_link)
-		temp_link_window=window.open(temp_link, "myWin")
+		console.log("\n\n\nopen link")
+		console.log("link: ", target[current_target][1])
+		temp_link_window=window.open(target[current_target][1])
+
+		var timerID = setTimeout("crawling_repeat(1)", 2500); 
 	}
-	var timerID = setTimeout("crawling_repeat(1)", 2500); 
+	else{
+		console.log("link: ", target[current_target][1])
+		var timerID = setTimeout("crawling_repeat(1)", 2500); 
+	}
 }
 
 function jsonSend() {
 	chrome.storage.local.get(['data1'], function(res) {
 		result=res.data1;
+		result=result.slice(0, -1);
+		result=result+"]}";
 		chrome.storage.local.get(['data2'], function(res) {
 			blog_result=res.data2;
 			console.log(result);
