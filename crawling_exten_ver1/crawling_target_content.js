@@ -205,28 +205,3 @@ function crawling_repeat() {
 	}
 }
 
-function jsonSend() {
-	chrome.storage.local.get(['data1'], function(res) {
-		result=res.data1;
-		result=result.slice(0, -1);
-		result=result+"]}";
-		chrome.storage.local.get(['data2'], function(res) {
-			blog_result=res.data2;
-			console.log(result);
-			console.log(blog_result)
-			$.ajax({
-				method : "POST",
-				url : "http://hushit.live/service/camper/api/v1_crawling/set_naver_detail_javascript.php",
-				//url : "http://localhost:8080/nmt/NMTTestServlet",
-				data : {"data":result, "data2" : blog_result}, //json을 보내는 방법
-				success : function(data) { //서블렛을 통한 결과 값을 받을 수 있습니다.
-				    console.log("data: "+data);
-				},
-				error : function(e) {
-					console.log(e);
-					alert('실패했습니다.');
-				}
-			});			
-    	});
-    });
-}
