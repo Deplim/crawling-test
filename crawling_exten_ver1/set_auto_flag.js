@@ -6,7 +6,8 @@ pk_button.addEventListener('click', set_flag);
 
 function set_flag(){
 	chrome.storage.local.get(['auto_flag'], function(result) {
-		if(result.auto_flag===0){
+		console.log(result.auto_flag)
+		if(result.auto_flag===0 || result.auto_flag===undefined){
 			chrome.storage.local.set({auto_flag: 1})
 			console.log("auto falg 1 로 바꿈.")
 		}

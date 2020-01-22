@@ -177,6 +177,7 @@ function crawling_repeat() {
 			if(auto_flag===1){
 				window.location.href="http://hushit.live/service/camper/api/v1_crawling/get_list_todo_detail_naver_javascrpit.php"
 			}
+			return 0;
 		}
 
 		temp_link_window.close()
