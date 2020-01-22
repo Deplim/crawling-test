@@ -8,10 +8,18 @@
   "content_scripts": [
     {
       "matches": [
+        "http://hushit.live/*"
+      ],
+      "js": [
+        "get_target_address.js"
+      ]
+    },
+    {
+      "matches": [
         "<all_urls>"
       ],
       "js": [
-        "get_target_address.js", "crawling_target_content.js"
+        "crawling_target_content.js"
       ]
     }
   ]

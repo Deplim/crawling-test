@@ -15,3 +15,10 @@ temp_imageUrl=temp_imageUrl.slice(0, temp_imageUrl.lastIndexOf("%"));
 select * from CampGround where isDelete=0 and source="naverplace" order by updateDate asc;
 3285
 http://hushit.live/service/camper/api/v1_crawling/get_list_todo_detail_naver_javascrpit.php
+
+
+
+7224
+7058
+7233
+7242
