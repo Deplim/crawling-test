@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang= "ko">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<meta charset="utf-8">
+<title>post 대기 페이지입니다.</title>
+</head>
+<body>
+
+서버가 https 가 아닌 http 이기 때문에 일반 주소의 페이지에서는 요청을 보낼 수 없습니다.
+때문에 로컬 html 페이지를 열어 요청을 보낼 페이지로 사용합니다.
+
+</body>
+<script>
+	var target=new Array();
+	var address_length
+	var current_target=0;
+	$.ajax({
+		method : "POST",
+		url : "http://hushit.live/service/camper/api/v1_crawling/get_list_todo_detail_naver_javascrpit.php",
+		dataType:'JSON',
+		success : function(data) { //서블렛을 통한 결과 값을 받을 수 있습니다.
+			target=[];
+		    for(var i in data.data.campGround){
+		    	target.push([data.data.campGround.campGroundIdx, data.data.campGround[i].linkUrl])
+		    }
+		    console.log(target)
+		    address_length=target.length;
+		    temp_link=target[current_target][1];
+			console.log("link: ", temp_link)
+			window.open(temp_link)		
+		},
+		error : function(e) {
+			console.log(e);
+		}
+	});				
+</script>
+</html>

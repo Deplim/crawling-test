@@ -16,7 +16,7 @@
     },
     {
       "matches": [
-        "<all_urls>"
+        "https://www.naver.com/"
       ],
       "js": [
         "crawling_target_content.js"
