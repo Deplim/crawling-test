@@ -38,7 +38,7 @@ chrome.storage.local.get(['auto_flag'], function(result) {
 
 function naver_place_crawling(){
 	result=result+"{\"campGround\":[";
-		$.ajax({
+	$.ajax({
 		method : "POST",
 		url : "http://hushit.live/service/camper/api/v1_crawling/get_list_todo_detail_naver_javascrpit.php",
 		dataType:'JSON',
