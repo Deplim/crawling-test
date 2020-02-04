@@ -51,13 +51,13 @@ function naver_place_crawling(){
 		    address_length=target.length;
 		    temp_link=target[current_target][1];
 			console.log("link: ", temp_link)
-			temp_link_window=window.open(temp_link)		
+			temp_link_window=window.open(temp_link)	
 			var timerID = setTimeout("crawling_repeat()", 2500); 
 		},
 		error : function(e) {
 			console.log(e);
 		}
-	});		
+	});					
 }
 
 function go_switch(){
@@ -184,9 +184,14 @@ function crawling_repeat() {
 			console.log(blog_result)
 			chrome.storage.local.set({data1: result})
 			chrome.storage.local.set({data2: blog_result})
-			if(auto_flag===1){
-				naver_place_crawling()
-			}
+			chrome.storage.local.get(['auto_flag'], function(result) {
+				if(result.auto_flag){
+					auto_flag=result.auto_flag;
+				}
+				if(auto_flag===1){
+					naver_place_crawling()
+				}
+			});
 			return 0;
 		}
 

@@ -1,0 +1,32 @@
+function get_address(){
+	var data_str=document.getElementsByTagName("pre")[0].textContent.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+	var data_splited=data_str.split(',')
+	var target_idx;
+	var target_url
+	for (var i in data_splited){
+		if(data_splited[i].includes("campGroundIdx")){
+			temp=data_splited[i].split('\"')
+			temp_idx=temp.indexOf("campGroundIdx")
+			target_idx=temp[temp_idx+2]
+		}
+		else if(data_splited[i].includes("linkUrl")){
+			temp=data_splited[i].split('\"')
+			target_url=temp[3]
+			console.log(target_url)
+
+			//인덱스와 주소가 쌍을 이루는 배열을 타깃 배열에 추가.
+			target.push([target_idx, target_url])
+		}
+	}
+	chrome.storage.local.set({address: target})
+
+	//만약 auto_flag 가 1이라면 자동으로 크롤링 실행 페이지로 이동.
+	chrome.storage.local.get(['auto_flag'], function(result) {
+		if(result.auto_flag){
+			auto_flag=result.auto_flag;
+			if(auto_flag===1){
+				window.location.href="https://www.naver.com/"
+			}
+		}
+	});
+}
