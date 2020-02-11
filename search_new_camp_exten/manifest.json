@@ -1,0 +1,33 @@
+/* 네이버 플레이스 크롤링 확장 프로그램 
+ * 현제 네이버 플레이스 크롤링이 막혀있어 확장 프로그램을 이용해 페이지를 직접 열어 크롤링하도록 한 것.
+ * 한 페이지당 약 2.5 초 소요. 시간은 코드의 setTimeout 부분을 수정하여 조절할 수 있음.
+ * ReadMe 를 꼭 읽어보고 사용하시기 바랍니다.
+ * 정의령 (https://github.com/Deplim)
+ */ 
+
+{
+  "manifest_version": 2,
+  "name": "crawling test",
+  "version": "0.1",
+  "permissions": [
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "http://hushit.live/service/post_page.html"
+      ],
+      "js": [
+        "get_current_address.js"
+      ]
+    },
+    {
+      "matches": [
+        "https://www.naver.com/"
+      ],
+      "js": [
+        "crawling_target_content.js"
+      ]
+    }
+  ]
+}
