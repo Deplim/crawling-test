@@ -97,7 +97,7 @@ function jsonSend() {
 
 						//auto_flag가 1이면 자동으로 다시 크롤링 대상 주소들 받아오는 함수 실행.
 						if(auto_flag===1){
-							var timerID = setTimeout("get_address()", 3600000); 
+							var timerID = setTimeout("get_address()", 5000); 
 						}
 					}
 				});			

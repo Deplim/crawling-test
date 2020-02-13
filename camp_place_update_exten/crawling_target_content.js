@@ -80,7 +80,7 @@ function naver_place_crawling(){
         //첫번째 주소 받아서와 윈도우 열기.
     	temp_link=target[current_target][1];
     	console.log("link: ", temp_link)
-		temp_link_window=window.open(temp_link)	
+		temp_link_window=window.open(temp_link, "crawl_target")	
 
 		//윈도우가 열리는 것을 2.5 초 기다린 후 crawling_repeat 함수 시작.
 		var timerID = setTimeout("crawling_repeat()", 2500); 
@@ -302,7 +302,7 @@ function crawling_repeat() {
 		console.log("link: ", target[current_target][1])
 
 		//대상 주소 윈도우 열기
-		temp_link_window=window.open(target[current_target][1])
+		temp_link_window=window.open(target[current_target][1], "crawl_target")
 
 		// go_flag 가 1이면 실행을 지속하는 것이므로 윈도우 열리는 것을 2.5초 기다리고 크롤링 반복 함수 실행.
 		if(go_flag==1){
@@ -323,7 +323,7 @@ function crawling_repeat() {
 			//페이지를 닫고 다시 열어본다.
 			temp_link_window.close()
 			console.log("Failed to open link and try again.")
-			temp_link_window=window.open(target[current_target][1])
+			temp_link_window=window.open(target[current_target][1], "crawl_target")
 		}
 
 		// document 는 얻어올 수 있지만 아직 로드가 완료되지 않은 경우.
