@@ -51,7 +51,7 @@ function get_address(){
 		success : function(data) { 
 			target=[];
 		    for(var i in data.data.campGround){
-		    	target.push([data.data.campGround[i].campGroundIdx, data.data.campGround[i].linkUrl])
+		    	target.push([data.data.campGround[i].campGroundIdx, data.data.campGround[i].linkUrl.replace("http:","https:")])
 		    }
 		    console.log(target)
 		    chrome.storage.local.set({address: target})
@@ -97,7 +97,7 @@ function jsonSend() {
 
 						//auto_flag가 1이면 자동으로 다시 크롤링 대상 주소들 받아오는 함수 실행.
 						if(auto_flag===1){
-							var timerID = setTimeout("get_address()", 5000); 
+							var timerID = setTimeout("get_address()", 3600000); 
 						}
 					}
 				});			

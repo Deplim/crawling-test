@@ -110,7 +110,7 @@ function crawling_repeat() {
 
 		    // 대상 주소와 연 페이지의 주소가 같지 않다면 예외처리. 현제 한번 크롤링을 할때 5% 정도씩의 페이지에서 이 오류가 나옴.
 		    if(temp_link_window.location.href!==target[current_target][1]){
-		    	throw new Error("윈도우 오픈 관련 오류로 인해 중복 추출됨")
+		    	throw new Error("윈도우 오픈 관련 오류로 인해 중복 추출됨\n"+"current:"+temp_link_window.location.href+"\ntarget:"+target[current_target][1])
 		    }
 
 		    // 크롤링 대상 요소들을 담을 변수들.

@@ -1,4 +1,4 @@
-
+﻿
 <네이버 플레이스 크롤링 확장 프로그램>
  
 
@@ -63,7 +63,7 @@
   4. 자동 모드라면 get_address 한번만 누르면 이후 계속 자동으로 돈다.
   5. 수동 모드라면 get_address 를 눌러 크롤링 대상 주소들을 받고,  https://www.naver.com/
       으로 이동해 naver crawling 버튼을 누르면 정해진 갯수만큼 결과가 저장된다. 
-      다시 hhttp://hushit.live/service/post_page.html
+      다시 http://hushit.live/service/post_page.html
       로 이동해 db update 를 누르면 결과를 보낼 수 있고, 응답으로 입력 결과 관련한 정보들을 보여주도록 하였다.
    
 
