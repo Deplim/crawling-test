@@ -18,15 +18,15 @@
         "http://hushit.live/service/post_page.html"
       ],
       "js": [
-        "get_current_address.js"
+        "get_target.js"
       ]
     },
     {
       "matches": [
-        "https://www.naver.com/"
+        "https://store.naver.com/accommodations/*"
       ],
       "js": [
-        "crawling_target_content.js"
+        "search_new_camp.js"
       ]
     }
   ]

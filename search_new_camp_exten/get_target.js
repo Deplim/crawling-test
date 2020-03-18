@@ -1,5 +1,6 @@
 /* 서버 요청 관련 코드. 
  * 현제 url 이 http://hushit.live/service/camper/api/v1_crawling/get_list_todo_detail_naver_javascrpit.php 일 때만 작동하며 이 페이지에서 타깃 주소들을 받고 크롤링한 결과를 보냅니다.
+ * ReadMe 를 꼭 읽어보고 사용하시기 바랍니다.
  * 정의령 (https://github.com/Deplim)
  */ 
 
@@ -14,23 +15,48 @@ tt_button.style="position: fixed; top: 40px; right: 130px; z-index: 999; backgro
 document.body.appendChild(tt_button);
 tt_button.addEventListener('click', get_address);
 
+/*
+var ss_button = document.createElement('button');
+ss_button.innerHTML=("db update");
+ss_button.style="position: fixed; top: 70px; right: 130px; z-index: 999; background-color:lightgreen;";
+document.body.appendChild(ss_button);
+ss_button.addEventListener('click', jsonSend);
+*/
+
 //받아온 크롤링 대상 플레이스 인덱스와 주소들
 var target=new Array()
+
+// 보낼 크롤링 결과 임시 저장할 변수들.
+var result="";
+
 
 //서버에 대상 주소들 얻어오는 함수.
 function get_address(){
 	$.ajax({
 		method : "POST",
-		url : "http://hushit.live/service/camper/api/v1_crawling/get_list_todo_detail_naver_javascrpit.php",
+		url : "http://hushit.live/service/camper/api/v1_crawling/get_list_gocamp_loc.php",
 		dataType:'JSON',
 		success : function(data) { 
 			target=[];
-		    for(var i in data.data.campGround){
-		    	target.push(data.data.campGround[i].linkUrl)
+		    for(var i in data.data.gocamp){
+		    	target.push([data.data.gocamp[i].lat, data.data.gocamp[i].lng])
+		    	var lat=parseFloat(data.data.gocamp[i].lat);
+		    	var lng=parseFloat(data.data.gocamp[i].lng);
+		    	console.log(lat, " , " + lng)
+
+		    	var current_target_url="";
+		    	current_target_url=current_target_url+"https://store.naver.com/accommodations/list?bounds=";
+		    	current_target_url=current_target_url+(lng-0.001).toFixed(4)+"%3B";
+		    	current_target_url=current_target_url+(lat-0.001).toFixed(4)+"%3B";
+		    	current_target_url=current_target_url+(lng+0.001).toFixed(4)+"%3B";
+		    	current_target_url=current_target_url+(lat+0.001).toFixed(4);
+		    	current_target_url=current_target_url+"&ip=203.233.111.56&isService=true&query=캠핑장&so=rel.dsc";
+		    	console.log(current_target_url);
 		    }
 		    console.log(target)
-		    console.log(target.length)
-		    chrome.storage.local.set({address: target})
+		    chrome.storage.local.set({target: target})
+		    chrome.storage.local.set({go_flag: 0})
+		    chrome.storage.local.set({current_target: 0})
 		},
 		error : function(e) {
 			console.log(e);
@@ -38,8 +64,35 @@ function get_address(){
 	});	
 }
 
-
-
+/*
+function jsonSend() {
+	chrome.storage.local.get(['data1'], function(res) {
+		if(res.data1!==undefined){
+			result=res.data1;
+			result=result.slice(0, -1);
+			result=result+"]}";
+			chrome.storage.local.get(['data2'], function(res) {
+				blog_result=res.data2;
+				console.log(result);
+				console.log(blog_result)
+				$.ajax({
+					method : "POST",
+					url : "http://hushit.live/service/camper/api/v1_crawling/set_naver_detail_javascript.php",
+					data : {"data":result, "data2" : blog_result}, 
+					success : function(data) { 
+					    console.log("data: "+data);
+					},
+					// 서버에 데이터를 보내면 처리와 저장은 잘 되지만 error 처리가 되는데 해결하기 전까진 에러 콜백함수에서 후처리 하는 것으로 함.
+					error : function(e) {
+						console.log(e);
+						console.log("db 입력 완료. \n\n\n\n\n")
+					}
+				});			
+	    	});
+		}
+    });
+}
+*/
 
 
 
