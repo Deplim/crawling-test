@@ -63,6 +63,35 @@ function go_switch(){
 	return 0;
 }
 
+function change_quotation(target_string){
+	var tString=target_string;
+	var count=0;
+	while(tString.includes("\'")){
+		if(count%2==0){
+			console.log(count)
+			tString=tString.replace("\'", "‘")
+		}
+		else{
+			console.log(count)
+			tString=tString.replace("\'", "’")
+		}
+		count=count+1;
+	}
+	count=0;
+	while(tString.includes("\"")){
+		if(count%2==0){
+			console.log(count)
+			tString=tString.replace("\"", "“")
+		}
+		else{
+			console.log(count)
+			tString=tString.replace("\"", "”")
+		}
+		count=count+1;
+	}
+	return tString;
+}
+
 //크롤링 시작 함수.
 function naver_place_crawling(){
 
@@ -177,8 +206,8 @@ function crawling_repeat() {
 
 								//블로그 리뷰 크롤링.
 								for(var i=0; i<list_place_col1.length; i++){
-									blog=blog+"{\"title\":\""+list_place_col1[i].getElementsByClassName("name")[0].innerHTML+"\""
-									blog=blog+",\"content\":\""+list_place_col1[i].getElementsByClassName("txt ellp2")[0].innerHTML+"\""
+									blog=blog+"{\"title\":\""+change_quotation(list_place_col1[i].getElementsByClassName("name")[0].innerHTML)+"\""
+									blog=blog+",\"content\":\""+change_quotation(list_place_col1[i].getElementsByClassName("txt ellp2")[0].innerHTML)+"\""
 									blog=blog+",\"author\":\""+list_place_col1[i].getElementsByClassName("info name")[0].children[0].innerHTML+"\""
 									blog=blog+",\"linkUrl\":\""+list_place_col1[i].getElementsByClassName("name")[0].href+"\""
 									if(list_place_col1[i].getElementsByClassName("thumb").length!=0){	

@@ -88,7 +88,13 @@ function jsonSend() {
 					url : "http://hushit.live/service/camper/api/v1_crawling/set_naver_detail_javascript.php",
 					data : {"data":result, "data2" : blog_result}, 
 					success : function(data) { 
-					    console.log("data: "+data);
+					    console.log("success: "+data);
+						console.log("db 입력 완료. \n\n\n\n\n")
+
+						//auto_flag가 1이면 자동으로 다시 크롤링 대상 주소들 받아오는 함수 실행.
+						if(auto_flag===1){
+							var timerID = setTimeout("get_address()", 10000); 
+						}
 					},
 					// 서버에 데이터를 보내면 처리와 저장은 잘 되지만 error 처리가 되는데 해결하기 전까진 에러 콜백함수에서 후처리 하는 것으로 함.
 					error : function(e) {
@@ -97,7 +103,7 @@ function jsonSend() {
 
 						//auto_flag가 1이면 자동으로 다시 크롤링 대상 주소들 받아오는 함수 실행.
 						if(auto_flag===1){
-							var timerID = setTimeout("get_address()", 3600000); 
+							var timerID = setTimeout("get_address()", 10000); 
 						}
 					}
 				});			
