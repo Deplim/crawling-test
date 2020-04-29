@@ -15,56 +15,48 @@ tt_button.style="position: fixed; top: 40px; right: 130px; z-index: 999; backgro
 document.body.appendChild(tt_button);
 tt_button.addEventListener('click', get_address);
 
-// 서버에 크롤링 결과 저장하는 버튼 앨리먼트 생성.
+/*
 var ss_button = document.createElement('button');
 ss_button.innerHTML=("db update");
 ss_button.style="position: fixed; top: 70px; right: 130px; z-index: 999; background-color:lightgreen;";
 document.body.appendChild(ss_button);
 ss_button.addEventListener('click', jsonSend);
+*/
 
 //받아온 크롤링 대상 플레이스 인덱스와 주소들
 var target=new Array()
 
 // 보낼 크롤링 결과 임시 저장할 변수들.
 var result="";
-var blog_result=new Array();
 
-//자동 무한 반복 플래그.
-var auto_flag=0;
-
-//auto_flag 가져와서 1이라면 자동으로 결과 서버 보내는 함수 시작.
-chrome.storage.local.get(['auto_flag'], function(result) {
-	if(result.auto_flag){
-		auto_flag=result.auto_flag;
-		if(auto_flag===1){
-			jsonSend()
-		}
-	}
-});
 
 //서버에 대상 주소들 얻어오는 함수.
 function get_address(){
 	$.ajax({
 		method : "POST",
-		url : "http://hushit.live/service/camper/api/v1_crawling/get_list_todo_detail_naver_javascrpit.php",
+		url : "http://hushit.live/service/camper/api/v1_crawling/get_list_gocamp_loc.php",
 		dataType:'JSON',
 		success : function(data) { 
 			target=[];
-		    for(var i in data.data.campGround){
-		    	target.push([data.data.campGround[i].campGroundIdx, data.data.campGround[i].linkUrl.replace("http:","https:")])
+		    for(var i in data.data.gocamp){
+		    	target.push([data.data.gocamp[i].lat, data.data.gocamp[i].lng])
+		    	var lat=parseFloat(data.data.gocamp[i].lat);
+		    	var lng=parseFloat(data.data.gocamp[i].lng);
+		    	console.log(lat, " , " + lng)
+
+		    	var current_target_url="";
+		    	current_target_url=current_target_url+"https://store.naver.com/accommodations/list?bounds=";
+		    	current_target_url=current_target_url+(lng-0.001).toFixed(4)+"%3B";
+		    	current_target_url=current_target_url+(lat-0.001).toFixed(4)+"%3B";
+		    	current_target_url=current_target_url+(lng+0.001).toFixed(4)+"%3B";
+		    	current_target_url=current_target_url+(lat+0.001).toFixed(4);
+		    	current_target_url=current_target_url+"&ip=203.233.111.56&isService=true&query=캠핑장&so=rel.dsc";
+		    	console.log(current_target_url);
 		    }
 		    console.log(target)
-		    chrome.storage.local.set({address: target})
-
-		    //만약 auto_flag 가 1이라면 자동으로 크롤링 실행 페이지로 이동.
-			chrome.storage.local.get(['auto_flag'], function(result) {
-				if(result.auto_flag){
-					auto_flag=result.auto_flag;
-					if(auto_flag===1){
-						window.location.href="https://www.naver.com/"
-					}
-				}
-			});
+		    chrome.storage.local.set({target: target})
+		    chrome.storage.local.set({go_flag: 0})
+		    chrome.storage.local.set({current_target: 0})
 		},
 		error : function(e) {
 			console.log(e);
@@ -72,7 +64,7 @@ function get_address(){
 	});	
 }
 
-//서버에 크롤링 결과 보내는 함수.
+/*
 function jsonSend() {
 	chrome.storage.local.get(['data1'], function(res) {
 		if(res.data1!==undefined){
@@ -88,36 +80,19 @@ function jsonSend() {
 					url : "http://hushit.live/service/camper/api/v1_crawling/set_naver_detail_javascript.php",
 					data : {"data":result, "data2" : blog_result}, 
 					success : function(data) { 
-					    console.log("success: "+data);
-						console.log("db 입력 완료. \n\n\n\n\n")
-
-						//auto_flag가 1이면 자동으로 다시 크롤링 대상 주소들 받아오는 함수 실행.
-						if(auto_flag===1){
-							var timerID = setTimeout("get_address()", 10000); 
-						}
+					    console.log("data: "+data);
 					},
 					// 서버에 데이터를 보내면 처리와 저장은 잘 되지만 error 처리가 되는데 해결하기 전까진 에러 콜백함수에서 후처리 하는 것으로 함.
 					error : function(e) {
 						console.log(e);
 						console.log("db 입력 완료. \n\n\n\n\n")
-
-						//auto_flag가 1이면 자동으로 다시 크롤링 대상 주소들 받아오는 함수 실행.
-						if(auto_flag===1){
-							var timerID = setTimeout("get_address()", 10000); 
-						}
 					}
 				});			
 	    	});
 		}
-
-		//아직 저장할 결과가 없는 경우 바로 대상 주소들 받는 함수 실행. 
-		else{
-			get_address()
-		}
     });
 }
-
-
+*/
 
 
 

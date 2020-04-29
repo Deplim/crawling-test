@@ -4,6 +4,12 @@
  * 정의령 (https://github.com/Deplim)
  */
 
+var block_string="<h4 id='ext_block_h4'>&nbsp;crawling naverplace detail</h4><hr id='ext_block_hr'><table><tbody id='ext_block_tbody'></tbody></table>"
+var ext_block = document.createElement('div');
+ext_block.id = "ext_block";
+document.body.appendChild(ext_block);
+ext_block.innerHTML=block_string
+
 // 크롤링 무한 반복 여부를 세팅하는 버튼 앨리먼트 생성.
 var pk_button = document.createElement('button');
 chrome.storage.local.get(['auto_flag'], function(result) {
@@ -14,9 +20,12 @@ chrome.storage.local.get(['auto_flag'], function(result) {
 		pk_button.innerHTML=("auto flag switch (on)");
 	}
 });
-pk_button.style="position: fixed; top: 100px; right: 130px; z-index: 999; background-color:red;";
-document.body.appendChild(pk_button);
+pk_button.className="g_button"
 pk_button.addEventListener('click', set_flag);
+
+var temp_tr=document.createElement('tr');
+document.getElementById("ext_block_tbody").appendChild(temp_tr)
+temp_tr.appendChild(pk_button)
 
 // 무한 반복 여부 세팅 함수.
 function set_flag(){

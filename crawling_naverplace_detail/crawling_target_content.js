@@ -1,22 +1,28 @@
 /* 대상 주소들 크롤링 코드
  * 현제 url 이 https://www.naver.com/ 일 때만 작동하며 이 페이지가 크롤링 기준점이 됩니다.
- * ReadMe 를 꼭 읽어보고 사용하시기 바랍니다.
+ * ReadMe 를 꼭 읽어보고 사용하기 바랍니다.
  * 정의령 (https://github.com/Deplim)
  */ 
 
 //크롤링을 시작하는 버튼 앨리먼트 생성.
-var st_button = document.createElement('button');
-st_button.innerHTML=("naver crawling");
-st_button.style="position: fixed; top: 40px; right: 10px; z-index: 999; background-color:lightblue;";
-document.body.appendChild(st_button);
-st_button.addEventListener('click', naver_place_crawling);
+var crawling_button = document.createElement('button');
+crawling_button.innerHTML=("naver crawling");
+crawling_button.className="g_button"
+crawling_button.addEventListener('click', naver_place_crawling);
 
 //크롤링 정지 & 재시작을 재어하는 버튼 앨리먼트 생성.
-var kk_button = document.createElement('button');
-kk_button.innerHTML=("stop // go");
-kk_button.style="position: fixed; top: 70px; right: 10px; z-index: 999; background-color:orange;";
-document.body.appendChild(kk_button);
-kk_button.addEventListener('click', go_switch);
+var goflag_button = document.createElement('button');
+goflag_button.innerHTML=("stop // go");
+goflag_button.className="g_button"
+goflag_button.addEventListener('click', go_switch);
+
+var temp_tr=document.createElement('tr');
+document.getElementById("ext_block_tbody").appendChild(temp_tr)
+temp_tr.appendChild(crawling_button)
+
+var temp_tr=document.createElement('tr');
+document.getElementById("ext_block_tbody").appendChild(temp_tr)
+temp_tr.appendChild(goflag_button)
 
 //정지 & 진행 상태 플래그 & 페이지 열림 확인 플래그 & 자동 무한 반복 플래그.
 var go_flag=1;
@@ -63,6 +69,35 @@ function go_switch(){
 	return 0;
 }
 
+function change_quotation(target_string){
+	var tString=target_string;
+	var count=0;
+	while(tString.includes("\'")){
+		if(count%2==0){
+			console.log(count)
+			tString=tString.replace("\'", "‘")
+		}
+		else{
+			console.log(count)
+			tString=tString.replace("\'", "’")
+		}
+		count=count+1;
+	}
+	count=0;
+	while(tString.includes("\"")){
+		if(count%2==0){
+			console.log(count)
+			tString=tString.replace("\"", "“")
+		}
+		else{
+			console.log(count)
+			tString=tString.replace("\"", "”")
+		}
+		count=count+1;
+	}
+	return tString;
+}
+
 //크롤링 시작 함수.
 function naver_place_crawling(){
 
@@ -78,9 +113,10 @@ function naver_place_crawling(){
         address_length=target.length;
 
         //첫번째 주소 받아서와 윈도우 열기.
-    	temp_link=target[current_target][1];
+    	//temp_link=target[current_target][1];
+    	temp_link="https://opentutorials.org/course/1"
     	console.log("link: ", temp_link)
-		temp_link_window=window.open(temp_link)	
+		temp_link_window=window.open(temp_link, "crawl_target")	
 
 		//윈도우가 열리는 것을 2.5 초 기다린 후 crawling_repeat 함수 시작.
 		var timerID = setTimeout("crawling_repeat()", 2500); 
@@ -110,7 +146,7 @@ function crawling_repeat() {
 
 		    // 대상 주소와 연 페이지의 주소가 같지 않다면 예외처리. 현제 한번 크롤링을 할때 5% 정도씩의 페이지에서 이 오류가 나옴.
 		    if(temp_link_window.location.href!==target[current_target][1]){
-		    	throw new Error("윈도우 오픈 관련 오류로 인해 중복 추출됨")
+		    	throw new Error("윈도우 오픈 관련 오류로 인해 중복 추출됨\n"+"current:"+temp_link_window.location.href+"\ntarget:"+target[current_target][1])
 		    }
 
 		    // 크롤링 대상 요소들을 담을 변수들.
@@ -177,8 +213,8 @@ function crawling_repeat() {
 
 								//블로그 리뷰 크롤링.
 								for(var i=0; i<list_place_col1.length; i++){
-									blog=blog+"{\"title\":\""+list_place_col1[i].getElementsByClassName("name")[0].innerHTML+"\""
-									blog=blog+",\"content\":\""+list_place_col1[i].getElementsByClassName("txt ellp2")[0].innerHTML+"\""
+									blog=blog+"{\"title\":\""+change_quotation(list_place_col1[i].getElementsByClassName("name")[0].innerHTML)+"\""
+									blog=blog+",\"content\":\""+change_quotation(list_place_col1[i].getElementsByClassName("txt ellp2")[0].innerHTML)+"\""
 									blog=blog+",\"author\":\""+list_place_col1[i].getElementsByClassName("info name")[0].children[0].innerHTML+"\""
 									blog=blog+",\"linkUrl\":\""+list_place_col1[i].getElementsByClassName("name")[0].href+"\""
 									if(list_place_col1[i].getElementsByClassName("thumb").length!=0){	
@@ -302,7 +338,7 @@ function crawling_repeat() {
 		console.log("link: ", target[current_target][1])
 
 		//대상 주소 윈도우 열기
-		temp_link_window=window.open(target[current_target][1])
+		temp_link_window=window.open(target[current_target][1], "crawl_target")
 
 		// go_flag 가 1이면 실행을 지속하는 것이므로 윈도우 열리는 것을 2.5초 기다리고 크롤링 반복 함수 실행.
 		if(go_flag==1){
@@ -323,7 +359,7 @@ function crawling_repeat() {
 			//페이지를 닫고 다시 열어본다.
 			temp_link_window.close()
 			console.log("Failed to open link and try again.")
-			temp_link_window=window.open(target[current_target][1])
+			temp_link_window=window.open(target[current_target][1], "crawl_target")
 		}
 
 		// document 는 얻어올 수 있지만 아직 로드가 완료되지 않은 경우.

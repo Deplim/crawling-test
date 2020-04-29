@@ -1,0 +1,45 @@
+.g_button{
+	color: #444444;
+    background: #F3F3F3;
+    width:235px;
+    border: 1px #DADADA solid;
+    padding: 5px 10px;
+    border-radius: 2px;
+    font-weight: bold;
+    font-size: 10pt;
+    outline: none;
+}
+
+#ext_block{
+	position: fixed;
+	right:50px;
+	top:50px;
+	width:240px;
+	height:300px;
+
+	border:2px solid black;
+
+	opacity: 0.8;
+	background-color:black;
+	z-index:2147483647;
+}
+
+#ext_block_h4{
+	color:white;
+	font-size:18px;
+	margin:0px;
+	border:0px;
+	padding-top:9px;
+	padding-bottom:9px;
+}
+
+#ext_block_hr{
+	margin-top:3px;
+	margin-bottom:5px;
+}
+
+
+
+
+
+

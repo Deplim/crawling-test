@@ -1,18 +1,27 @@
-/* 네이버 플레이스 크롤링 확장 프로그램 
+/* 네이버 플레이스 크롤링 확장 프로그램 : 확보되어있는 네이버플레이스 캠핑장들의 detail 내용 업데이트하기. 
  * 현제 네이버 플레이스 크롤링이 막혀있어 확장 프로그램을 이용해 페이지를 직접 열어 크롤링하도록 한 것.
  * 한 페이지당 약 2.5 초 소요. 시간은 코드의 setTimeout 부분을 수정하여 조절할 수 있음.
- * ReadMe 를 꼭 읽어보고 사용하시기 바랍니다.
+ * ReadMe 를 꼭 읽어보고 사용하기 바랍니다.
  * 정의령 (https://github.com/Deplim)
  */ 
 
 {
   "manifest_version": 2,
-  "name": "crawling test",
+  "name": "crawling_naverplace_detail",
   "version": "0.1",
   "permissions": [
     "storage"
   ],
   "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "css": ["dec.css"],
+      "js": [
+        "set_auto_flag.js"
+      ]
+    },
     {
       "matches": [
         "http://hushit.live/service/post_page.html"
@@ -27,14 +36,6 @@
       ],
       "js": [
         "crawling_target_content.js"
-      ]
-    },
-    {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": [
-        "set_auto_flag.js"
       ]
     }
   ]
