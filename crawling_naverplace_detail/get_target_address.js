@@ -94,20 +94,12 @@ function jsonSend() {
 					url : "http://hushit.live/service/camper/api/v1_crawling/set_naver_detail_javascript.php",
 					data : {"data":result, "data2" : blog_result}, 
 					success : function(data) { 
-<<<<<<< HEAD:crawling_naverplace_detail/get_target_address.js
-					    console.log("data: "+data);
-					    console.log("post 완료. \n\n\n\n\n")
-
-					    if(auto_flag===1){
-							var timerID = setTimeout("get_address()", 5000); 
-=======
 					    console.log("success: "+data);
-						console.log("db 입력 완료. \n\n\n\n\n")
+						console.log("post 완료. \n\n\n\n\n")
 
 						//auto_flag가 1이면 자동으로 다시 크롤링 대상 주소들 받아오는 함수 실행.
 						if(auto_flag===1){
 							var timerID = setTimeout("get_address()", 10000); 
->>>>>>> 2e1c6389cc208c7c1b7d72963c6825c92fc12acb:camp_place_update_exten/get_target_address.js
 						}
 					},
 					// 서버에 데이터를 보내면 처리와 저장은 잘 되지만 error 처리가 되는데 해결하기 전까진 에러 콜백함수에서 후처리 하는 것으로 함.

@@ -74,11 +74,9 @@ function change_quotation(target_string){
 	var count=0;
 	while(tString.includes("\'")){
 		if(count%2==0){
-			console.log(count)
 			tString=tString.replace("\'", "‘")
 		}
 		else{
-			console.log(count)
 			tString=tString.replace("\'", "’")
 		}
 		count=count+1;
@@ -113,8 +111,7 @@ function naver_place_crawling(){
         address_length=target.length;
 
         //첫번째 주소 받아서와 윈도우 열기.
-    	//temp_link=target[current_target][1];
-    	temp_link="https://opentutorials.org/course/1"
+    	temp_link=target[current_target][1];
     	console.log("link: ", temp_link)
 		temp_link_window=window.open(temp_link, "crawl_target")	
 
@@ -154,8 +151,37 @@ function crawling_repeat() {
 			var reviewCount=0;
 			var bookReviewCount=0;
 			var bookFlag=0;
+			var bookUrl="";
 			var rating=0;
+			var telNo=""
+			var gocamp="x"
 			
+			//장소 이름 아래에 예약, 길찾기, 거리뷰, 공유 등의 링크들이 있는 리스트의 앨리먼트를 얻어온다. 
+			var list_item=temp_link_window.document.getElementsByClassName("list_item")[0].children;
+
+			//리스트의 첫번째 앨리먼트에 예약 유무에 따라 북 플래그 결정.
+			if(list_item[0].href.includes("booking.naver.com")){
+				bookFlag=1;
+				bookUrl=list_item[0];
+			}
+			else{
+				bookFlag=0;
+			}
+
+			if(temp_link_window.document.getElementsByClassName("list_item list_item_biztel").length!=0){
+				var temp_E = temp_link_window.document.getElementsByClassName("list_item list_item_biztel")[0]
+				telNo= temp_E.getElementsByClassName("txt")[0].innerHTML
+			}
+
+			if(temp_link_window.document.getElementsByClassName("tourism_business_info_area").length!=0){
+				var temp_E=temp_link_window.document.getElementsByClassName("tourism_business_info_area")[0]
+				console.log("\n gocamp?:")
+				if(temp_E.getElementsByTagName("a").length!=0){
+					console.log("YES !")
+					gocamp=temp_E.getElementsByTagName("a")[0].href;
+				}
+			}
+
 			/*
 			 *아래의 코드들은 크롤링 대상 페이지가 네이버 플레이스라는 가정하에 작성.
 			 */
@@ -255,25 +281,15 @@ function crawling_repeat() {
 				}
 			}
 
-			//장소 이름 아래에 예약, 길찾기, 거리뷰, 공유 등의 링크들이 있는 리스트의 앨리먼트를 얻어온다. 
-			var list_item=temp_link_window.document.getElementsByClassName("list_item")[0].children;
-
-			//리스트의 첫번째 앨리먼트에 예약 유무에 따라 북 플래그 결정.
-			if(list_item[0].href.includes("booking.naver.com")){
-				var bookFlag=1;
-			}
-			else{
-				var bookFlag=0;
-			}
 
 			//현제 페이지의 크롤링 결과 콘솔화면에 출력.
-			console.log(target[current_target][0], "\n", blog, "\n", reviewCount, "\n", bookReviewCount, "\n", bookFlag, "\n", rating, "\n", "isdelete = 0", "\n")
+			console.log(target[current_target][0], "\n", blog, "\n", reviewCount, "\n", bookReviewCount, "\n", bookFlag, "\n", bookUrl, "\n", rating, "\n", telNo ,"\n", gocamp, "\n" , "isdelete = 0")
 
 			//블로그 크롤링 결과 배열에 입력.
 			blog_result.push(blog)
 
 			//크롤링 결과 문자열에 추가.
-			result=result+"{\"campGroundIdx\":\""+target[current_target][0]+"\","+"\"reviewCount\":\""+reviewCount+"\","+"\"bookReviewCount\":\""+bookReviewCount+"\","+"\"bookFlag\":\""+bookFlag+"\","+"\"rating\":\""+rating+"\","+"\"isDelete\":\"0\"},";
+			result=result+"{\"campGroundIdx\":\""+target[current_target][0]+"\","+"\"reviewCount\":\""+reviewCount+"\","+"\"bookReviewCount\":\""+bookReviewCount+"\","+"\"bookFlag\":\""+bookFlag+"\","+"\"bookUrl\":\""+bookUrl+"\","+"\"rating\":\""+rating+"\","+"\"telNo\":\""+telNo+"\","+"\"gocamp\":\""+gocamp+"\","+"\"isDelete\":\"0\"},";
 		}
 
 		//크롤링 도중 오류가 생긴 경우 결과 반영이 되지 않는다.
@@ -282,10 +298,9 @@ function crawling_repeat() {
 			try{
 				//대상 페이지가 없어진 경우 isDelete 가 1이게 한 결과를 따로 추가한다.
 				if(temp_link_window.document.title.includes("페이지를 찾을 수 없습니다.")){
-					console.log("요청 페이지 없음.")
+					console.log("요청 페이지 없음. isDelete=1 로 처리됩니다.")
 					blog_result.push(blog)
-					result=result+"{\"campGroundIdx\":\""+target[current_target][0]+"\","+"\"reviewCount\":\"0\","+"\"bookReviewCount\":\"0\","+"\"bookFlag\":\"0\","+"\"rating\":\"0\","+"\"isDelete\":\"1\"},"
-					console.log(target[current_target][0], "\n", blog, "\n", reviewCount, "\n", bookReviewCount, "\n", bookFlag, "\n", rating, "\n", "isdelete = 1", "\n")
+					result=result+"{\"campGroundIdx\":\""+target[current_target][0]+"\","+"\"isDelete\":\"1\"},"
 				}
 			}
 			//아예 페이지가 제대로 열리지 않은 경우 위의 if 문에서 title 을 찾지 못해 오류가 나므로, 예외처리하고 크롤링 지속.
