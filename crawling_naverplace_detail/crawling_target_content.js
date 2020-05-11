@@ -238,7 +238,15 @@ function crawling_repeat() {
 								var list_place_col1=temp_link_window.document.getElementsByClassName("list_place_col1")[0].children;
 
 								//블로그 리뷰 크롤링.
+								var temp_count=0
 								for(var i=0; i<list_place_col1.length; i++){
+									var temp_title=list_place_col1[i].getElementsByClassName("name")[0].innerHTML
+									var temp_content=list_place_col1[i].getElementsByClassName("txt ellp2")[0].innerHTML
+
+									if(!temp_title.includes("캠핑") && !temp_title.includes("야영") && !temp_content.includes("캠핑") && !temp_content.includes("야영")){
+										continue
+									}
+
 									blog=blog+"{\"title\":\""+change_quotation(list_place_col1[i].getElementsByClassName("name")[0].innerHTML)+"\""
 									blog=blog+",\"content\":\""+change_quotation(list_place_col1[i].getElementsByClassName("txt ellp2")[0].innerHTML)+"\""
 									blog=blog+",\"author\":\""+list_place_col1[i].getElementsByClassName("info name")[0].children[0].innerHTML+"\""
@@ -252,13 +260,15 @@ function crawling_repeat() {
 										blog=blog+",\"imageUrl\":\"null\"";
 									}
 									blog=blog+",\"registDate\":\""+list_place_col1[i].getElementsByClassName("info time")[0].innerHTML+"\"},"
-									
-									//블로그 크롤링은 3개까지만.
-									if(i==2){
-										break;
+
+									temp_count=temp_count+1
+									if(temp_count==3){
+										break
 									}
-								}						
-								blog=blog.slice(0, -1);
+								}		
+								if(temp_count!=0){
+									blog=blog.slice(0, -1);
+								}
 								blog=blog+"]";
 
 								//값을 얻어오지 못한 경우 예외처리.
