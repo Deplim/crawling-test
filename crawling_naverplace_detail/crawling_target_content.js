@@ -155,6 +155,7 @@ function crawling_repeat() {
 			var rating=0;
 			var telNo=""
 			var gocamp="x"
+			var address=""
 			
 			//장소 이름 아래에 예약, 길찾기, 거리뷰, 공유 등의 링크들이 있는 리스트의 앨리먼트를 얻어온다. 
 			var list_item=temp_link_window.document.getElementsByClassName("list_item")[0].children;
@@ -182,9 +183,9 @@ function crawling_repeat() {
 				}
 			}
 
-			/*
-			 *아래의 코드들은 크롤링 대상 페이지가 네이버 플레이스라는 가정하에 작성.
-			 */
+			if(temp_link_window.document.getElementsByClassName("list_address")[0].getElementsByClassName("addr")[0].length!=0){
+				address=temp_link_window.document.getElementsByClassName("list_address")[0].getElementsByClassName("addr")[0].innerHTML
+			}
 			
 			//장소 이름 아래에 예약자 리뷰, 블로그 리뷰의 갯수가 적혀있는 있는 링크들의 리스트가 존재하는지 확인한다.
 			if(temp_link_window.document.getElementsByClassName("info_inner").length!=0){
@@ -243,7 +244,7 @@ function crawling_repeat() {
 									var temp_title=list_place_col1[i].getElementsByClassName("name")[0].innerHTML
 									var temp_content=list_place_col1[i].getElementsByClassName("txt ellp2")[0].innerHTML
 
-									if(!temp_title.includes("캠핑") && !temp_title.includes("야영") && !temp_content.includes("캠핑") && !temp_content.includes("야영")){
+									if(!temp_title.includes("캠핑") && !temp_title.includes("야영") && !temp_title.includes("휴양림") && !temp_content.includes("캠핑") && !temp_content.includes("야영") && !temp_content.includes("휴양림")){
 										continue
 									}
 
@@ -299,7 +300,7 @@ function crawling_repeat() {
 			blog_result.push(blog)
 
 			//크롤링 결과 문자열에 추가.
-			result=result+"{\"campGroundIdx\":\""+target[current_target][0]+"\","+"\"reviewCount\":\""+reviewCount+"\","+"\"bookReviewCount\":\""+bookReviewCount+"\","+"\"bookFlag\":\""+bookFlag+"\","+"\"bookUrl\":\""+bookUrl+"\","+"\"rating\":\""+rating+"\","+"\"telNo\":\""+telNo+"\","+"\"gocamp\":\""+gocamp+"\","+"\"isDelete\":\"0\"},";
+			result=result+"{\"campGroundIdx\":\""+target[current_target][0]+"\","+"\"reviewCount\":\""+reviewCount+"\","+"\"bookReviewCount\":\""+bookReviewCount+"\","+"\"bookFlag\":\""+bookFlag+"\","+"\"bookUrl\":\""+bookUrl+"\","+"\"rating\":\""+rating+"\","+"\"telNo\":\""+telNo+"\","+"\"address\":\""+address+"\","+"\"gocamp\":\""+gocamp+"\","+"\"isDelete\":\"0\"},";
 		}
 
 		//크롤링 도중 오류가 생긴 경우 결과 반영이 되지 않는다.

@@ -149,18 +149,15 @@ function crawling_repeat() {
 				for(var i=0; i<temp_list.children.length; i++){
 					var title;
 					var linkUrl;
-					var address;
 					var temp_result={};
 
 					var temp_camp=temp_list.children[i]				
 					
 					title=temp_camp.getElementsByClassName("name")[0].getElementsByTagName("span")[0].innerHTML
 					linkUrl=temp_camp.getElementsByTagName("a")[0].getAttribute("href")
-					address=temp_camp.getElementsByClassName("txt ellp")[0].innerHTML
 
 					temp_result["title"]=title
 					temp_result["linkUrl"]=linkUrl
-					temp_result["address"]=address
 
 					result.push(temp_result)					
 				}
